@@ -31,6 +31,8 @@ n2 = range(1,50) # Number of major/class-types (the button in the middle of the 
 n3 = range(1,500) # Number of classes within each major/class-type +a lot
 
 #def click_element(xpath0)
+def SelectDays():
+    pass
 
 def create_ics():
     for i in range(len(events)):
@@ -155,6 +157,8 @@ def read_page():
         if 'W' in Days1L: Days.append('WE')
         if 'R' in Days1L: Days.append('TH')
         if 'F' in Days1L: Days.append('FR')
+        if 'S' in Days1L: Days.append('SA')
+        if 'U' in Days1L: Days.append('SU')
 
     # Get date info (of first occurance)
     FirstDate = readx('/html/body/table/tbody/tr[2]/td/table[2]/tbody/tr[2]/td[1]/table/tbody/tr[3]/td/table/tbody/tr[2]/td[1]')
@@ -171,6 +175,10 @@ def read_page():
             delta = timedelta(days=3)
         elif 'FR' in Days:
             delta = timedelta(days=4)
+        elif 'SA' in Days:
+            delta = timedelta(days=5)
+        elif 'SU' in Days:
+            delta = timedelta(days=6)
         FirstDate += delta
      
     # Combine date and time info (combine date and time objects into a single datetime object, and then convert to string in the desired format)
@@ -180,9 +188,10 @@ def read_page():
     FirstDateEndTime = FirstDateEndTime.strftime('%Y%m%dT%H%M%S')
 
     # Get date info (of end date)
-    LastDate = readx('/html/body/table/tbody/tr[2]/td/table[2]/tbody/tr[2]/td[1]/table/tbody/tr[3]/td/table/tbody/tr[2]/td[2]')
-    LastDate = parse(LastDate).date()
-    LastDate = LastDate.strftime('%Y%m%d')
+    LastDate0 = readx('/html/body/table/tbody/tr[2]/td/table[2]/tbody/tr[2]/td[1]/table/tbody/tr[3]/td/table/tbody/tr[2]/td[2]')
+    LastDate0 = parse(LastDate0).date()
+    #if LastDate0 != '2023-03-25': SelectDays()
+    LastDate = LastDate0.strftime('%Y%m%d')
     LastDate = LastDate+'T000000'
     
     # Get current time to know when this program read the term master schedule (get UTC time and convert to EST)
@@ -203,7 +212,7 @@ def read_page():
     return EventName, Location, Description, FirstDateStartTime, FirstDateEndTime, LastDate, Days, timestamp
 
 def sleep():
-    sleepytime.sleep(0.2) #increase if slow internet connection while using program
+    sleepytime.sleep(0.1) #increase if slow internet connection while using program (i think)
 
 events = []
 
