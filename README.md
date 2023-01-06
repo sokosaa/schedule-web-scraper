@@ -1,4 +1,4 @@
-# schedule-websraper
+# schedule-web-scraper
 Fetches Drexel University's public master schedule and returns .ics files for easy import to your calendar of choice.
 
 The last scrape was made on Jannuary 5, 2023 and the files created from that are available in this repository under the folder 'ics_files'. They are also available here:
