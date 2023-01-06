@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from dateutil.parser import parse
-from datetime import datetime, time, date
+from datetime import datetime, time, date, timedelta
 import pytz
 import icalendar
 import shutil
@@ -145,10 +145,33 @@ def read_page():
     StartTime = datetime.strptime(Times.split(' - ')[0], time_format).time()
     EndTime = datetime.strptime(Times.split(' - ')[1], time_format).time()
 
+    # Get days of the week recurrance info
+    Days1L = readx('/html/body/table/tbody/tr[2]/td/table[2]/tbody/tr[2]/td[1]/table/tbody/tr[3]/td/table/tbody/tr[2]/td[4]')
+    Days = []
+    if 'TBD' in Days1L: Days.append('TBD')
+    else:
+        if 'M' in Days1L: Days.append('MO')
+        if 'T' in Days1L: Days.append('TU')
+        if 'W' in Days1L: Days.append('WE')
+        if 'R' in Days1L: Days.append('TH')
+        if 'F' in Days1L: Days.append('FR')
+
     # Get date info (of first occurance)
     FirstDate = readx('/html/body/table/tbody/tr[2]/td/table[2]/tbody/tr[2]/td[1]/table/tbody/tr[3]/td/table/tbody/tr[2]/td[1]')
     FirstDate = parse(FirstDate).date()
     #FirstDate = FirstDate.strftime('%Y%m%d')
+    if str(FirstDate) == '2023-01-09':
+        if 'MO' in Days:
+            delta = timedelta(days=0)
+        elif 'TU' in Days:
+            delta = timedelta(days=1)
+        elif 'WE' in Days:
+            delta = timedelta(days=2)
+        elif 'TH' in Days:
+            delta = timedelta(days=3)
+        elif 'FR' in Days:
+            delta = timedelta(days=4)
+        FirstDate += delta
      
     # Combine date and time info (combine date and time objects into a single datetime object, and then convert to string in the desired format)
     FirstDateStartTime = datetime.combine(FirstDate, StartTime)
@@ -161,17 +184,6 @@ def read_page():
     LastDate = parse(LastDate).date()
     LastDate = LastDate.strftime('%Y%m%d')
     LastDate = LastDate+'T000000'
-
-    # Get days of the week recurrance info
-    Days1Letters = readx('/html/body/table/tbody/tr[2]/td/table[2]/tbody/tr[2]/td[1]/table/tbody/tr[3]/td/table/tbody/tr[2]/td[4]')
-    Days = []
-    if 'TBD' in Days1Letters: Days.append('TBD')
-    else:
-        if 'M' in Days1Letters: Days.append('MO')
-        if 'T' in Days1Letters: Days.append('TU')
-        if 'W' in Days1Letters: Days.append('WE')
-        if 'R' in Days1Letters: Days.append('TH')
-        if 'F' in Days1Letters: Days.append('FR')
     
     # Get current time to know when this program read the term master schedule (get UTC time and convert to EST)
     utc_time = datetime.utcnow()
@@ -185,7 +197,7 @@ def read_page():
     all_vars.pop('time_format')
     all_vars.pop('StartTime')
     all_vars.pop('EndTime')
-    all_vars.pop('Days1Letters')
+    all_vars.pop('Days1L')
     '''
     
     return EventName, Location, Description, FirstDateStartTime, FirstDateEndTime, LastDate, Days, timestamp
