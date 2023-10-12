@@ -1,5 +1,5 @@
 # schedule-web-scraper
-Fetches Drexel University's public class information and returns .ics files for easy import to anyone's calendar of choice.
+Fetches Drexel University's public class information and returns .ics files for easy import to anyone's calendar of choice.  
 Example of scrapeable webpage: https://termmasterschedule.drexel.edu/webtms_du/collegesSubjects/202345?collCode=
 
 The last scrape was made on March 27, 2023 for Spring Term and the files created from that are available here: https://drive.google.com/drive/folders/1csOfYbTootzJR39_Eh-OaNzF7GiFzTeo
